@@ -31,7 +31,7 @@ class Engine(object):
         end_time = datetime.now()
         print('爬虫结束---耗时--{}'.format(end_time - start_time))
 
-    def _start_engine(self):
+    def _start_request(self):
         for start_request in self.spider.start_requests():
             # 1. 对start_request进过爬虫中间件进行处理
             #  添加spider_mid request 中间件
@@ -70,5 +70,14 @@ class Engine(object):
             else:
                 self.pipeline.process_item(result)
 
-
-
+    def _start_engine(self):
+        """
+        具体的实现引擎的细节
+        :return:
+        """
+        self._start_request()
+        while True:
+            time.sleep(0.001)
+            self._execute_request_response_item()
+            if self.total_response_nums >= self.total_request_nums:
+                break
